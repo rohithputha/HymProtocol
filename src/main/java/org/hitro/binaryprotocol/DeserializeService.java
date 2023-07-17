@@ -1,5 +1,8 @@
 package org.hitro.binaryprotocol;
 
+import org.hitro.binaryprotocol.coreconstants.Constants;
+import org.hitro.binaryprotocol.exceptions.HymProtocolException;
+
 public class DeserializeService<T> implements Runnable{
 
     private byte[] bitData;
@@ -14,17 +17,17 @@ public class DeserializeService<T> implements Runnable{
 
     public <T> T start(){
         try{
-            if(this.bitData[l]==92 && this.bitData[l+1]==104){
-                this.l +=2;
+            if(this.bitData[l]== Constants.getBackslash() && this.bitData[l+1]== Constants.getHByte()){
+                this.l+=2;
                 return this.getDatatype();
             }
         }
         catch (Exception e){
-            throw e;
+            throw new HymProtocolException("Message does not start with the protocol standards", e);
         }
-        return null;
+        throw new HymProtocolException("Message does not start with the protocol standards", new RuntimeException());
     }
-    public <T> T getDatatype(){
+    private <T> T getDatatype(){
         return null;
     }
     @Override
