@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.nio.charset.StandardCharsets;
 
 
-@Getter
+
 public class Constants {
 
     @Getter
@@ -19,4 +19,25 @@ public class Constants {
 
     @Getter
     private static final byte[] startBytes = {backslash,hByte};
+
+    @Getter
+    private static final byte stringByte = 115;
+
+    @Getter
+    private static final String stringTypeConstant = "\\s";
+
+    @Getter
+    private static final byte[] stringTypeBytes = {backslash,stringByte};
+
+    @Getter
+    private static final byte doubleByte = 100;
+
+    @Getter
+    private static final String doubleTypeConstant = "\\d";
+
+    @Getter
+    private static final byte[] doubleTypeBytes = {backslash,doubleByte};
+
+    @Getter
+    private static final byte sizeStartEndByte = 36;
 }
