@@ -2,14 +2,19 @@ package org.hitro.binaryprotocol.services;
 
 import java.nio.charset.StandardCharsets;
 
-public class StringEncDec implements EncDec<String>{
+public class StringEncDec extends EncDecCore<String> {
     @Override
-    public String decode(byte[] data) {
+    protected boolean focusDecValidation(byte[] data) {
+        return true;// think of any string focussed validation;
+    }
+
+    @Override
+    protected String decode(byte[] data) {
         return new String(data, StandardCharsets.UTF_8);
     }
 
     @Override
-    public byte[] encode(String data) {
+    protected byte[] encode(String data) {
         return new byte[0];
     }
 }

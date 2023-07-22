@@ -1,7 +1,7 @@
 package org.hitro.binaryprotocol.services;
 
 public interface EncDec<T> {
-    public T decode(byte[] data);
+    public T validateAndDecode(byte[] data);
 
-    public byte[] encode(T data);
+    public byte[] validateAndEncode(T data);
 }
