@@ -1,4 +1,4 @@
-package org.hitro.binaryprotocol.services;
+package org.hitro.binaryprotocol.services.encodedecode;
 
 import java.nio.charset.StandardCharsets;
 

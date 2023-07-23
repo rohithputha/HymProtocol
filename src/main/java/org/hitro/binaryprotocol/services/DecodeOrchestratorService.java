@@ -1,0 +1,63 @@
+package org.hitro.binaryprotocol.services;
+
+import org.hitro.binaryprotocol.coreconstants.DecodeSteps;
+import org.hitro.binaryprotocol.coreconstants.Type;
+import org.hitro.binaryprotocol.services.dataextractor.*;
+import org.hitro.binaryprotocol.services.encodedecode.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class DecodeOrchestratorService<T> {
+
+    ThreadLocal<EncDec> typeEncDecThreadLocal = ThreadLocal.withInitial(()-> null);
+    ThreadLocal<EncDec> sizeEncDecThreadLocal = ThreadLocal.withInitial(()-> null);
+
+    ThreadLocal<EncDec> stringEncDecThreadLocal = ThreadLocal.withInitial(()->null);
+
+    ThreadLocal<EncDec> doubleEncDecThreadLocal = ThreadLocal.withInitial(()-> null);
+
+    private Map<DecodeSteps, ThreadLocal<EncDec>> decodeStepsEncDecMap;
+    private Map<Type,ThreadLocal<EncDec>> typeEncDecMap;
+
+    private Map<DecodeSteps, ThreadLocal<ByteArrayExtractor>> decodeStepsExtractorMap;
+    public DecodeOrchestratorService(){
+        decodeStepsEncDecMap = new HashMap<>();
+        typeEncDecMap = new HashMap<>();
+        decodeStepsExtractorMap = new HashMap<>();
+        decodeStepsEncDecMap.put(DecodeSteps.START, null);
+        decodeStepsEncDecMap.put(DecodeSteps.TYPE, ThreadLocal.withInitial(()-> new TypeEncDec()));
+        decodeStepsEncDecMap.put(DecodeSteps.SIZE,ThreadLocal.withInitial(()->new SizeEncDec()));
+
+        typeEncDecMap.put(Type.STRING,ThreadLocal.withInitial(()->new StringEncDec()));
+        typeEncDecMap.put(Type.DOUBLE,ThreadLocal.withInitial(()-> new DoubleEncDec()));
+        typeEncDecMap.put(Type.ARRAY, ThreadLocal.withInitial(()->new ArrayEncDec(this)));
+
+        decodeStepsExtractorMap.put(DecodeSteps.START,ThreadLocal.withInitial(()->  new StartExctractor()));
+        decodeStepsExtractorMap.put(DecodeSteps.TYPE, ThreadLocal.withInitial(()-> new TypeExtractor()));
+        decodeStepsExtractorMap.put(DecodeSteps.SIZE, ThreadLocal.withInitial(()-> new SizeExtractor()));
+        decodeStepsExtractorMap.put(DecodeSteps.DATA, ThreadLocal.withInitial(()-> new DataPacketExtractor()));
+        decodeStepsExtractorMap.put(DecodeSteps.END, ThreadLocal.withInitial(()-> new StartExctractor()));
+
+
+    }
+
+    public T decodeBytes(byte[] data){
+        DataExtract dataExtract = null;
+        dataExtract = decodeStepsExtractorMap.get(DecodeSteps.START).get().extract(data,0);
+
+        dataExtract = decodeStepsExtractorMap.get(DecodeSteps.TYPE).get().extract(data, dataExtract.getNextPointer());
+        Type type = (Type) decodeStepsEncDecMap.get(DecodeSteps.TYPE).get().validateAndDecode(dataExtract.getExtractedData());
+        System.out.println(type);
+
+        dataExtract = decodeStepsExtractorMap.get(DecodeSteps.SIZE).get().extract(data,dataExtract.getNextPointer());
+        int size = (Integer) decodeStepsEncDecMap.get(DecodeSteps.SIZE).get().validateAndDecode(dataExtract.getExtractedData());
+        System.out.println(size);
+
+        dataExtract = decodeStepsExtractorMap.get(DecodeSteps.DATA).get().extract(data,dataExtract.getNextPointer());
+        if(type == Type.STRING){
+            return (T)typeEncDecMap.get(Type.STRING).get().validateAndDecode(dataExtract.getExtractedData());
+        }
+        return null;
+    }
+}

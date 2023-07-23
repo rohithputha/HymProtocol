@@ -1,4 +1,4 @@
-package org.hitro.binaryprotocol.services;
+package org.hitro.binaryprotocol.services.encodedecode;
 
 import org.hitro.binaryprotocol.coreconstants.Constants;
 import org.hitro.binaryprotocol.coreconstants.Type;
@@ -30,4 +30,5 @@ public class TypeEncDec extends EncDecCore<Type> {
     protected byte[] encode(Type data) {
         return new byte[0];
     }
+
 }

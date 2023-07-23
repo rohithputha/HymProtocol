@@ -1,4 +1,4 @@
-package org.hitro.binaryprotocol.services;
+package org.hitro.binaryprotocol.services.encodedecode;
 
 import org.hitro.binaryprotocol.coreconstants.Constants;
 
@@ -14,7 +14,7 @@ public class SizeEncDec extends EncDecCore<Integer> {
     protected Integer decode(byte[] data) {
         int l=1;
         int size = 0;
-        while(!isValidSizeContent(data[l])){
+        while(isValidSizeContent(data[l])){
             size = (size*10)+(data[l]-48);
             l+=1;
         }
