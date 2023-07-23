@@ -3,7 +3,6 @@ package org.hitro.binaryprotocol;
 import org.hitro.binaryprotocol.coreconstants.Constants;
 import org.hitro.binaryprotocol.coreconstants.Type;
 import org.hitro.binaryprotocol.exceptions.HymProtocolException;
-import org.hitro.binaryprotocol.services.TypeBytesDecoder;
 
 public class DeserializeService<T> implements Runnable{
 
@@ -30,12 +29,12 @@ public class DeserializeService<T> implements Runnable{
     }
 
     private static <T> T getDatatype(byte[] byteData, int l, int r){
-        Type datatype = TypeBytesDecoder.getDatatypeFromBytes(byteData[l],byteData[l+1]);
-        return getSize(byteData,l+2, r,datatype);
+//        Type datatype = TypeBytesDecoder.getDatatypeFromBytes(byteData[l],byteData[l+1]);
+        return null;
     }
 
     private static <T> T getSize(byte[] byteData, int l, int r, Type datatype){
-
+        return null;
     }
     @Override
     public void run() {
