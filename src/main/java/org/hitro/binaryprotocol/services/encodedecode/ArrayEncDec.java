@@ -1,16 +1,19 @@
 package org.hitro.binaryprotocol.services.encodedecode;
 
+import org.hitro.binaryprotocol.coreconstants.Constants;
 import org.hitro.binaryprotocol.services.DecodeOrchestratorService;
+import org.hitro.binaryprotocol.services.orchestrators.decode.DecodeOrchestrator;
 
-public class ArrayEncDec<T> extends EncDecCore<T>{
-    private ThreadLocal<StringEncDec> stringEncDec = ThreadLocal.withInitial(()-> null);
-    private ThreadLocal<DoubleEncDec> doubleEncDec = ThreadLocal.withInitial(()->null);
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-    DecodeOrchestratorService decodeOrchestratorService;
-    public ArrayEncDec(DecodeOrchestratorService decodeOrchestratorService){
-        stringEncDec.set(new StringEncDec());
-        doubleEncDec.set(new DoubleEncDec());
-        this.decodeOrchestratorService = decodeOrchestratorService;
+public class ArrayEncDec<T> extends SingleElementED<List<T>> {
+    private ThreadLocal<DecodeOrchestrator> decodeOrchestratorService = ThreadLocal.withInitial(()-> null);
+    public ArrayEncDec(DecodeOrchestrator decodeOrchestrator){
+        this.decodeOrchestratorService.set(decodeOrchestrator);
     }
     @Override
     protected boolean focusDecValidation(byte[] data) {
@@ -18,13 +21,35 @@ public class ArrayEncDec<T> extends EncDecCore<T>{
     }
 
     @Override
-    protected T decode(byte[] data) {
-
-        return null;
+    protected List<T> decode(byte[] data) {
+        List<byte[]> bytesData = this.getListOfByteData(data);
+        return  bytesData.stream()
+                .map(d-> (T) decodeOrchestratorService.get().decodeBytes(d))
+                .collect(Collectors.toList());
     }
-
+    private byte[] copyToByteArray(List<Byte> t){
+        byte[] packet = new byte[t.size()];
+        IntStream.range(0,t.size())
+                .forEach((i)-> packet[i] = t.get(i).byteValue());
+        return packet;
+    }
+    private List<byte[]> getListOfByteData(byte[] data){
+        int l = 1;
+        List<byte[]> bytesData = new ArrayList<>();
+        List<Byte> t = new ArrayList<>();
+        t.add(data[0]);
+        while(l<data.length){
+            t.add(data[l]);
+            if(data[l]==Constants.getEndByte() && data[l-1]==Constants.getBackslash()){
+                bytesData.add(copyToByteArray(t));
+                t = new ArrayList<>();
+            }
+            l++;
+        }
+        return bytesData;
+    }
     @Override
-    protected byte[] encode(T data) {
+    protected byte[] encode(List<T> data) {
         return new byte[0];
     }
 }

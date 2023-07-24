@@ -40,4 +40,15 @@ public class Constants {
 
     @Getter
     private static final byte sizeStartEndByte = 36;
+
+    @Getter
+    private static final byte arrayByte = 97;
+
+    @Getter
+    private static final byte[] arrayTypeBytes = {backslash,arrayByte};
+    @Getter
+    private static final byte endByte = 113;
+
+    @Getter
+    static final byte[] packetEndBytes = {backslash,endByte};
 }

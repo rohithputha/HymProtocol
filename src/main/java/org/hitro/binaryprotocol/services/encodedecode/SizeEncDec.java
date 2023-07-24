@@ -2,7 +2,7 @@ package org.hitro.binaryprotocol.services.encodedecode;
 
 import org.hitro.binaryprotocol.coreconstants.Constants;
 
-public class SizeEncDec extends EncDecCore<Integer> {
+public class SizeEncDec extends SingleElementED<Integer> {
     @Override
     protected boolean focusDecValidation(byte[] data) {
         return data.length>2 && data[0]== Constants.getSizeStartEndByte() && data[data.length-1] ==Constants.getSizeStartEndByte();

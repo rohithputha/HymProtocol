@@ -2,7 +2,7 @@ package org.hitro.binaryprotocol.services.encodedecode;
 
 import org.hitro.binaryprotocol.exceptions.HymProtocolException;
 
-public abstract class EncDecCore<T> implements EncDec<T> {
+public abstract class SingleElementED<T> implements EncDec<T> {
 
     public T validateAndDecode(byte[] data){
         if(!decValidation(data)){

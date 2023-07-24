@@ -2,7 +2,7 @@ package org.hitro.binaryprotocol.services.encodedecode;
 
 import java.nio.charset.StandardCharsets;
 
-public class StringEncDec extends EncDecCore<String> {
+public class StringEncDec extends SingleElementED<String> {
     @Override
     protected boolean focusDecValidation(byte[] data) {
         return true;// think of any string focussed validation;
