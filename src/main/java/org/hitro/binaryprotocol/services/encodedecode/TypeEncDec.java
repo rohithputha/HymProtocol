@@ -5,7 +5,7 @@ import org.hitro.binaryprotocol.coreconstants.Type;
 
 import java.util.Arrays;
 
-public class TypeEncDec extends EncDecCore<Type> {
+public class TypeEncDec extends SingleElementED<Type> {
 
     private boolean isEqual(byte[] input, byte[] protocolStandard){
         return Arrays.equals(input,protocolStandard);
@@ -22,6 +22,9 @@ public class TypeEncDec extends EncDecCore<Type> {
         }
         else if(isEqual(data,Constants.getDoubleTypeBytes())){
             return Type.DOUBLE;
+        }
+        else if(isEqual(data,Constants.getArrayTypeBytes())){
+            return Type.ARRAY;
         }
         return Type.ERROR;
     }
