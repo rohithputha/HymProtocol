@@ -8,27 +8,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DataEncDecProvider<T> {
-    private Map<DecodeSteps, ThreadLocal<EncDec>> decodeStepsEncDecMap;
-    private Map<Type,ThreadLocal<EncDec>> typeEncDecMap;
+    private Map<DecodeSteps,EncDec> decodeStepsEncDecMap;
+    private Map<Type,EncDec> typeEncDecMap;
 
     public DataEncDecProvider(DecodeOrchestrator decodeOrchestrator){
         decodeStepsEncDecMap = new HashMap<>();
         typeEncDecMap = new HashMap<>();
 
         decodeStepsEncDecMap.put(DecodeSteps.START, null);
-        decodeStepsEncDecMap.put(DecodeSteps.TYPE, ThreadLocal.withInitial(()-> new TypeEncDec()));
-        decodeStepsEncDecMap.put(DecodeSteps.SIZE,ThreadLocal.withInitial(()->new SizeEncDec()));
+        decodeStepsEncDecMap.put(DecodeSteps.TYPE,  new TypeEncDec());
+        decodeStepsEncDecMap.put(DecodeSteps.SIZE,  new SizeEncDec());
 
-        typeEncDecMap.put(Type.STRING,ThreadLocal.withInitial(()->new StringEncDec()));
-        typeEncDecMap.put(Type.DOUBLE,ThreadLocal.withInitial(()-> new DoubleEncDec()));
-        typeEncDecMap.put(Type.ARRAY, ThreadLocal.withInitial(()->new ArrayEncDec(decodeOrchestrator)));
+        typeEncDecMap.put(Type.STRING, new StringEncDec());
+        typeEncDecMap.put(Type.DOUBLE, new DoubleEncDec());
+        typeEncDecMap.put(Type.ARRAY,  new ArrayEncDec(decodeOrchestrator));
     }
 
     public T getDecodedData(byte[]data,DecodeSteps step){
-        return (T)decodeStepsEncDecMap.get(step).get().validateAndDecode(data);
+        return (T)decodeStepsEncDecMap.get(step).validateAndDecode(data);
     }
     public T getDecodedData(byte[] data, Type dataType){
-        return (T)typeEncDecMap.get(dataType).get().validateAndDecode(data);
+        return (T)typeEncDecMap.get(dataType).validateAndDecode(data);
     }
 
 }
