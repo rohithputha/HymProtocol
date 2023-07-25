@@ -10,43 +10,27 @@ import java.util.Map;
 import java.util.Optional;
 
 public class DecodeOrchestrator<T> {
-    private Map<DecodeSteps, ThreadLocal<EncDec>> decodeStepsEncDecMap;
-    private Map<Type,ThreadLocal<EncDec>> typeEncDecMap;
-    private Map<DecodeSteps, ThreadLocal<ByteArrayExtractor>> decodeStepsExtractorMap;
 
+    private DataEncDecProvider dataEncDecProvider;
+    private DataExtractorProvider dataExtractorProvider;
     public DecodeOrchestrator(){
-        decodeStepsEncDecMap = new HashMap<>();
-        typeEncDecMap = new HashMap<>();
-        decodeStepsExtractorMap = new HashMap<>();
-        decodeStepsEncDecMap.put(DecodeSteps.START, null);
-        decodeStepsEncDecMap.put(DecodeSteps.TYPE, ThreadLocal.withInitial(()-> new TypeEncDec()));
-        decodeStepsEncDecMap.put(DecodeSteps.SIZE,ThreadLocal.withInitial(()->new SizeEncDec()));
-
-        typeEncDecMap.put(Type.STRING,ThreadLocal.withInitial(()->new StringEncDec()));
-        typeEncDecMap.put(Type.DOUBLE,ThreadLocal.withInitial(()-> new DoubleEncDec()));
-        typeEncDecMap.put(Type.ARRAY, ThreadLocal.withInitial(()->new ArrayEncDec(this)));
-
-        decodeStepsExtractorMap.put(DecodeSteps.START,ThreadLocal.withInitial(()->  new StartExctractor()));
-        decodeStepsExtractorMap.put(DecodeSteps.TYPE, ThreadLocal.withInitial(()-> new TypeExtractor()));
-        decodeStepsExtractorMap.put(DecodeSteps.SIZE, ThreadLocal.withInitial(()-> new SizeExtractor()));
-        decodeStepsExtractorMap.put(DecodeSteps.DATA, ThreadLocal.withInitial(()-> new DataPacketExtractor()));
-        decodeStepsExtractorMap.put(DecodeSteps.END, ThreadLocal.withInitial(()-> new StartExctractor()));
+        dataEncDecProvider = new DataEncDecProvider<>(this);
+        dataExtractorProvider = new DataExtractorProvider();
     }
 
     public T decodeBytes(byte[] data){
         DataExtract dataExtract = null;
-        dataExtract = decodeStepsExtractorMap.get(DecodeSteps.START).get().extract(data,0, Optional.empty());
+        dataExtract = dataExtractorProvider.getDataExtractByStepCode(data,0,DecodeSteps.START, Optional.empty());
 
-        dataExtract = decodeStepsExtractorMap.get(DecodeSteps.TYPE).get().extract(data, dataExtract.getNextPointer(), Optional.empty());
-        Type type = (Type) decodeStepsEncDecMap.get(DecodeSteps.TYPE).get().validateAndDecode(dataExtract.getExtractedData());
+        dataExtract = dataExtractorProvider.getDataExtractByStepCode(data, dataExtract.getNextPointer(),DecodeSteps.TYPE, Optional.empty());
+        Type type = (Type) dataEncDecProvider.getDecodedData(dataExtract.getExtractedData(),DecodeSteps.TYPE);
         System.out.println(type);
 
-        dataExtract = decodeStepsExtractorMap.get(DecodeSteps.SIZE).get().extract(data,dataExtract.getNextPointer(), Optional.empty());
-        int size = (Integer) decodeStepsEncDecMap.get(DecodeSteps.SIZE).get().validateAndDecode(dataExtract.getExtractedData());
+        dataExtract = dataExtractorProvider.getDataExtractByStepCode(data, dataExtract.getNextPointer(), DecodeSteps.SIZE,Optional.empty());
+        int size = (Integer) dataEncDecProvider.getDecodedData(dataExtract.getExtractedData(),DecodeSteps.SIZE);
         System.out.println(size);
 
-        dataExtract = decodeStepsExtractorMap.get(DecodeSteps.DATA).get().extract(data,dataExtract.getNextPointer(),type==Type.ARRAY?Optional.of(-1):Optional.of(size));
-
-        return (T) typeEncDecMap.get(type).get().validateAndDecode(dataExtract.getExtractedData());
+        dataExtract = dataExtractorProvider.getDataExtractByStepCode(data, dataExtract.getNextPointer(), DecodeSteps.DATA,type == Type.ARRAY ? Optional.of(-1) : Optional.of(size));
+        return (T) dataEncDecProvider.getDecodedData(dataExtract.getExtractedData(),type);
     }
 }

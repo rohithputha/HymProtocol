@@ -1,19 +1,17 @@
 package org.hitro.binaryprotocol.services.encodedecode;
 
 import org.hitro.binaryprotocol.coreconstants.Constants;
-import org.hitro.binaryprotocol.services.DecodeOrchestratorService;
 import org.hitro.binaryprotocol.services.orchestrators.decode.DecodeOrchestrator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ArrayEncDec<T> extends SingleElementED<List<T>> {
-    private ThreadLocal<DecodeOrchestrator> decodeOrchestratorService = ThreadLocal.withInitial(()-> null);
+    private DecodeOrchestrator decodeOrchestratorService;
     public ArrayEncDec(DecodeOrchestrator decodeOrchestrator){
-        this.decodeOrchestratorService.set(decodeOrchestrator);
+        this.decodeOrchestratorService= decodeOrchestrator;
     }
     @Override
     protected boolean focusDecValidation(byte[] data) {
@@ -24,7 +22,7 @@ public class ArrayEncDec<T> extends SingleElementED<List<T>> {
     protected List<T> decode(byte[] data) {
         List<byte[]> bytesData = this.getListOfByteData(data);
         return  bytesData.stream()
-                .map(d-> (T) decodeOrchestratorService.get().decodeBytes(d))
+                .map(d-> (T) decodeOrchestratorService.decodeBytes(d))
                 .collect(Collectors.toList());
     }
     private byte[] copyToByteArray(List<Byte> t){
