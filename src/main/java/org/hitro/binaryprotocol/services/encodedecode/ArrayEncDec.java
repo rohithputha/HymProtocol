@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ArrayEncDec<T> extends SingleElementED<List<T>> {
+public class ArrayEncDec<T> extends EDCore<List<T>> {
     private DecodeOrchestrator decodeOrchestratorService;
     public ArrayEncDec(DecodeOrchestrator decodeOrchestrator){
         this.decodeOrchestratorService= decodeOrchestrator;
