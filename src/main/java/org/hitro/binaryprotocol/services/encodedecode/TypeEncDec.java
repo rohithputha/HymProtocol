@@ -5,7 +5,7 @@ import org.hitro.binaryprotocol.coreconstants.Type;
 
 import java.util.Arrays;
 
-public class TypeEncDec extends SingleElementED<Type> {
+public class TypeEncDec extends EDCore<Type> {
 
     private boolean isEqual(byte[] input, byte[] protocolStandard){
         return Arrays.equals(input,protocolStandard);
@@ -13,6 +13,11 @@ public class TypeEncDec extends SingleElementED<Type> {
     @Override
     protected boolean focusDecValidation(byte[] data) {
         return data.length==2 && data[0]==Constants.getBackslash();
+    }
+
+    @Override
+    protected boolean focusEncValidation(Type data) {
+        return true;
     }
 
     @Override
@@ -31,7 +36,16 @@ public class TypeEncDec extends SingleElementED<Type> {
 
     @Override
     protected byte[] encode(Type data) {
-        return new byte[0];
+        if(data == Type.STRING){
+            return Constants.getStringTypeBytes();
+        }
+        else if(data == Type.DOUBLE){
+            return Constants.getDoubleTypeBytes();
+        }
+        else if(data == Type.ARRAY){
+            return Constants.getArrayTypeBytes();
+        }
+        return new byte[2]; // change to Error bytes...
     }
 
 }

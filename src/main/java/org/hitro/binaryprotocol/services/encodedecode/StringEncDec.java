@@ -2,10 +2,15 @@ package org.hitro.binaryprotocol.services.encodedecode;
 
 import java.nio.charset.StandardCharsets;
 
-public class StringEncDec extends SingleElementED<String> {
+public class StringEncDec extends EDCore<String> {
     @Override
     protected boolean focusDecValidation(byte[] data) {
         return true;// think of any string focussed validation;
+    }
+
+    @Override
+    protected boolean focusEncValidation(String data) {
+        return true;
     }
 
     @Override
@@ -15,6 +20,6 @@ public class StringEncDec extends SingleElementED<String> {
 
     @Override
     protected byte[] encode(String data) {
-        return new byte[0];
+        return data.getBytes(StandardCharsets.UTF_8);
     }
 }
