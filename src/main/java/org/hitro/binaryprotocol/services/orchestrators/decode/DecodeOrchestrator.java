@@ -4,12 +4,13 @@ import org.hitro.binaryprotocol.coreconstants.DecodeSteps;
 import org.hitro.binaryprotocol.coreconstants.Type;
 import org.hitro.binaryprotocol.services.dataextractor.*;
 import org.hitro.binaryprotocol.services.encodedecode.*;
+import org.hitro.binaryprotocol.services.orchestrators.Orchestrator;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class DecodeOrchestrator<T> {
+public class DecodeOrchestrator<T> implements Orchestrator<T,byte[]> {
 
     private DataEncDecProvider dataEncDecProvider;
     private DataExtractorProvider dataExtractorProvider;
@@ -32,5 +33,10 @@ public class DecodeOrchestrator<T> {
 
         dataExtract = dataExtractorProvider.getDataExtractByStepCode(data, dataExtract.getNextPointer(), DecodeSteps.DATA,type == Type.ARRAY ? Optional.of(-1) : Optional.of(size));
         return (T) dataEncDecProvider.getDecodedData(dataExtract.getExtractedData(),type);
+    }
+
+    @Override
+    public T orchestrate(byte[] data) {
+        return decodeBytes(data);
     }
 }

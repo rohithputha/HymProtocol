@@ -1,17 +1,21 @@
 package org.hitro.binaryprotocol.services.encodedecode;
 
 import org.hitro.binaryprotocol.coreconstants.Constants;
+import org.hitro.binaryprotocol.services.datapacker.DataPacket;
+import org.hitro.binaryprotocol.services.orchestrators.Orchestrator;
 import org.hitro.binaryprotocol.services.orchestrators.decode.DecodeOrchestrator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ArrayEncDec<T> extends EDCore<List<T>> {
-    private DecodeOrchestrator decodeOrchestratorService;
-    public ArrayEncDec(DecodeOrchestrator decodeOrchestrator){
-        this.decodeOrchestratorService= decodeOrchestrator;
+    private Orchestrator orchestrator;
+    public ArrayEncDec(Orchestrator orchestrator){
+        this.orchestrator=orchestrator;
     }
     @Override
     protected boolean focusDecValidation(byte[] data) {
@@ -19,10 +23,15 @@ public class ArrayEncDec<T> extends EDCore<List<T>> {
     }
 
     @Override
+    protected boolean focusEncValidation(List<T> data) {
+        return true;
+    }
+
+    @Override
     protected List<T> decode(byte[] data) {
         List<byte[]> bytesData = this.getListOfByteData(data);
         return  bytesData.stream()
-                .map(d-> (T) decodeOrchestratorService.decodeBytes(d))
+                .map(d-> (T) orchestrator.orchestrate(d))
                 .collect(Collectors.toList());
     }
     private byte[] copyToByteArray(List<Byte> t){
@@ -48,6 +57,13 @@ public class ArrayEncDec<T> extends EDCore<List<T>> {
     }
     @Override
     protected byte[] encode(List<T> data) {
-        return new byte[0];
+        DataPacket dataPacket = new DataPacket(new LinkedList<>(), 0);
+        for (T subData: data){
+            byte[] t = (byte[]) orchestrator.orchestrate(subData);
+            LinkedList<byte[]> s = dataPacket.getByteList();
+            s.add(t);
+            dataPacket = new DataPacket(s, dataPacket.getTotalBytes()+t.length);
+        }
+        return dataPacket.convertDataToBytes();
     }
 }
