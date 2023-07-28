@@ -7,6 +7,7 @@ import org.hitro.binaryprotocol.services.datapacker.DataPacket;
 import org.hitro.binaryprotocol.services.orchestrators.Orchestrator;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EncodeOrchestrator<T> implements Orchestrator<byte[], T> {
 
@@ -25,6 +26,12 @@ public class EncodeOrchestrator<T> implements Orchestrator<byte[], T> {
 
         byte[] bytesSize = dataEncProvider.getEncodedData(bytesData.length,DecodeSteps.SIZE);
         dataPacket = this.dataPackerProvider.getDataPacketByStepCode(bytesSize,dataPacket,DecodeSteps.SIZE);
+//        System.out.println(dataPacket.getByteList().size());
+//        for(byte[] d: dataPacket.getByteList()){
+//            for(byte b: d)
+//                System.out.print(b +" ,");
+//            System.out.println();
+//        }
 
         byte[] bytesType = dataEncProvider.getEncodedData(prType,DecodeSteps.TYPE);
         dataPacket = this.dataPackerProvider.getDataPacketByStepCode(bytesType,dataPacket,DecodeSteps.TYPE);
