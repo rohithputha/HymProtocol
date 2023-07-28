@@ -5,8 +5,14 @@ import org.hitro.binaryprotocol.coreconstants.Constants;
 public class SizeEncDec extends EDCore<Integer> {
     @Override
     protected boolean focusDecValidation(byte[] data) {
-        return data.length>2 && data[0]== Constants.getSizeStartEndByte() && data[data.length-1] ==Constants.getSizeStartEndByte();
+        return data.length>2 && data[0]== Constants.getSizeStartEndByte() && data[data.length-1] == Constants.getSizeStartEndByte();
     }
+
+    @Override
+    protected boolean focusEncValidation(Integer data) {
+        return true;
+    }
+
     private boolean isValidSizeContent(byte st){
         return st>=48 && st<=57;
     }
@@ -23,12 +29,15 @@ public class SizeEncDec extends EDCore<Integer> {
 
     @Override
     protected byte[] encode(Integer data) {
-        String stringVer = Integer.toString(data);
-        byte[] sizeBytes = new byte[stringVer.length()+2];
+        char[] sizeChar = Integer.toString(data).toCharArray();
+        byte[] sizeBytes = new byte[sizeChar.length+2];
         int l = 0;
-        while(l<stringVer.length()){
-            sizeBytes[l+1]= stringVer.
+        while(l<sizeChar.length){
+            sizeBytes[l+1] =(byte) sizeChar[l];
+            l++;
         }
-        return
+        sizeBytes[0] = Constants.getSizeStartEndByte();
+        sizeBytes[sizeBytes.length-1]= Constants.getSizeStartEndByte();
+        return sizeBytes;
     }
 }
