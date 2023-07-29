@@ -5,10 +5,7 @@ import org.hitro.binaryprotocol.services.datapacker.DataPacket;
 import org.hitro.binaryprotocol.services.orchestrators.Orchestrator;
 import org.hitro.binaryprotocol.services.orchestrators.decode.DecodeOrchestrator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -45,11 +42,18 @@ public class ArrayEncDec<T> extends EDCore<List<T>> {
         List<byte[]> bytesData = new ArrayList<>();
         List<Byte> t = new ArrayList<>();
         t.add(data[0]);
+        Stack<Boolean> level = new Stack<>();
         while(l<data.length){
             t.add(data[l]);
-            if(data[l]==Constants.getEndByte() && data[l-1]==Constants.getBackslash()){
-                bytesData.add(copyToByteArray(t));
-                t = new ArrayList<>();
+            if(data[l]==Constants.getHByte() &&  data[l-1]==Constants.getBackslash()){
+                level.add(true);
+            }
+            else if(data[l]==Constants.getEndByte() && data[l-1]==Constants.getBackslash()){
+                level.pop();
+                if(level.isEmpty()){
+                    bytesData.add(copyToByteArray(t));
+                    t = new ArrayList<>();
+                }
             }
             l++;
         }

@@ -20,16 +20,20 @@ public class DecodeOrchestrator<T> implements Orchestrator<T,byte[]> {
     }
 
     public T decodeBytes(byte[] data){
+        System.out.println("-> "+ data.length);
+        for(int i=0;i<data.length;i++){
+            System.out.print(data[i]+" ,");
+        }
+        System.out.println();
         DataExtract dataExtract = null;
         dataExtract = dataExtractorProvider.getDataExtractByStepCode(data,0,DecodeSteps.START, Optional.empty());
 
         dataExtract = dataExtractorProvider.getDataExtractByStepCode(data, dataExtract.getNextPointer(),DecodeSteps.TYPE, Optional.empty());
         Type type = (Type) dataEncDecProvider.getDecodedData(dataExtract.getExtractedData(),DecodeSteps.TYPE);
-        System.out.println(type);
 
         dataExtract = dataExtractorProvider.getDataExtractByStepCode(data, dataExtract.getNextPointer(), DecodeSteps.SIZE,Optional.empty());
         int size = (Integer) dataEncDecProvider.getDecodedData(dataExtract.getExtractedData(),DecodeSteps.SIZE);
-        System.out.println(size);
+
 
         dataExtract = dataExtractorProvider.getDataExtractByStepCode(data, dataExtract.getNextPointer(), DecodeSteps.DATA,type == Type.ARRAY ? Optional.of(-1) : Optional.of(size));
         return (T) dataEncDecProvider.getDecodedData(dataExtract.getExtractedData(),type);

@@ -14,13 +14,16 @@ public class Main {
         BinaryProtocol binaryProtocol = BinaryProtocolImplementation.getInstance();
         byte[] data = new byte[]{92,104,92,97,36,49,36,92,104,92,115,36,49,49,36,104,101,108,108,111,32,119,111,114,108,100,92,113,92,113};
         List<Object> dl = new ArrayList<>();
-        dl.add("hello");
-        dl.add(1);
+        List<Object> sdl = new ArrayList<>();
+        sdl.add("b");
+        dl.add("b");
+        dl.add(sdl);
+        dl.add("b");
         byte[] encodedData  = binaryProtocol.encode(dl);
         for(byte d: encodedData){
             System.out.print(d +" ,");
         }
-
+        System.out.println();
         System.out.println(decodeOrchestrator.decodeBytes(encodedData));
     }
 
