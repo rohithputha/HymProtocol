@@ -41,8 +41,8 @@ public class ArrayEncDec<T> extends EDCore<List<T>> {
         int l = 1;
         List<byte[]> bytesData = new ArrayList<>();
         List<Byte> t = new ArrayList<>();
-        t.add(data[0]);
         Stack<Boolean> level = new Stack<>();
+        t.add(data[0]);
         while(l<data.length){
             t.add(data[l]);
             if(data[l]==Constants.getHByte() &&  data[l-1]==Constants.getBackslash()){
