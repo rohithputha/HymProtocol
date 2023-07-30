@@ -4,11 +4,11 @@ import org.hitro.binaryprotocol.services.orchestrators.Orchestrator;
 import org.hitro.binaryprotocol.services.orchestrators.decode.DecodeOrchestrator;
 import org.hitro.binaryprotocol.services.orchestrators.encode.EncodeOrchestrator;
 
-public class BinaryProtocolImplementation<T> implements BinaryProtocol<T>{
+public class IBinaryProtocol<T> implements BinaryProtocol<T>{
     private DecodeOrchestrator decodeOrchestrator;
 
     private Orchestrator encodeOrchestrator;
-    private BinaryProtocolImplementation(){
+    private IBinaryProtocol(){
         this.decodeOrchestrator =new DecodeOrchestrator<>();
         this.encodeOrchestrator = new EncodeOrchestrator<>();
     }
@@ -26,9 +26,9 @@ public class BinaryProtocolImplementation<T> implements BinaryProtocol<T>{
     private static BinaryProtocol binaryProtocol;
     public static BinaryProtocol getInstance(){
         if(binaryProtocol==null){
-            synchronized (BinaryProtocolImplementation.class){
+            synchronized (IBinaryProtocol.class){
                 if(binaryProtocol==null){
-                    binaryProtocol = new BinaryProtocolImplementation();
+                    binaryProtocol = new IBinaryProtocol();
                 }
             }
         }
