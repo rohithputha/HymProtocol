@@ -5,5 +5,6 @@ public enum DecodeSteps {
     TYPE,
     SIZE,
     DATA,
-    END
+    END,
+    TERMINATE
 }

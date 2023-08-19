@@ -1,5 +1,6 @@
 package org.hitro.binaryprotocol.publicinterfaces;
 
+import org.hitro.binaryprotocol.coreconstants.Constants;
 import org.hitro.binaryprotocol.services.orchestrators.Orchestrator;
 import org.hitro.binaryprotocol.services.orchestrators.decode.DecodeOrchestrator;
 import org.hitro.binaryprotocol.services.orchestrators.encode.EncodeOrchestrator;
@@ -20,7 +21,12 @@ public class IBinaryProtocol<T> implements BinaryProtocol<T>{
 
     @Override
     public byte[] encode(T data) {
-        return (byte[]) encodeOrchestrator.orchestrate(data);
+        byte[] dataModule =  (byte[]) encodeOrchestrator.orchestrate(data);
+        byte[] commandSep = Constants.getModuleTerminationBytes();
+        byte[] combinedArray = new byte[dataModule.length + commandSep.length];
+        System.arraycopy(dataModule, 0, combinedArray, 0, dataModule.length);
+        System.arraycopy(commandSep, 0, combinedArray, dataModule.length, commandSep.length);
+        return combinedArray;
     }
 
     private static BinaryProtocol binaryProtocol;
