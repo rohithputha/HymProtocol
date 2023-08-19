@@ -32,6 +32,8 @@ public class EncodeOrchestrator<T> implements Orchestrator<byte[], T> {
 
         dataPacket = this.dataPackerProvider.getDataPacketByStepCode(Constants.getStartBytes(),dataPacket,DecodeSteps.START);
         dataPacket = this.dataPackerProvider.getDataPacketByStepCode(Constants.getPacketEndBytes(),dataPacket,DecodeSteps.END);
+
+        dataPacket.getByteList().addLast(Constants.getModuleTerminationBytes());
         return dataPacket.convertDataToBytes();
     }
 

@@ -50,5 +50,8 @@ public class Constants {
     private static final byte endByte = 113;
 
     @Getter
-    static final byte[] packetEndBytes = {backslash,endByte};
+    private static final byte[] packetEndBytes = {backslash,endByte};
+
+    @Getter
+    private static final byte[] moduleTerminationBytes = {backslash,119};
 }
