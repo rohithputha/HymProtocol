@@ -20,11 +20,6 @@ public class DecodeOrchestrator<T> implements Orchestrator<T,byte[]> {
     }
 
     public T decodeBytes(byte[] data){
-        System.out.println("-> "+ data.length);
-        for(int i=0;i<data.length;i++){
-            System.out.print(data[i]+" ,");
-        }
-        System.out.println();
         DataExtract dataExtract = null;
         dataExtract = dataExtractorProvider.getDataExtractByStepCode(data,0,DecodeSteps.START, Optional.empty());
 
