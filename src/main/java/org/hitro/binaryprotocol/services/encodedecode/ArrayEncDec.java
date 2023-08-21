@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ArrayEncDec<T> extends EDCore<List<T>> {
-    private Orchestrator orchestrator;
+    private final Orchestrator orchestrator;
     public ArrayEncDec(Orchestrator orchestrator){
         this.orchestrator=orchestrator;
     }

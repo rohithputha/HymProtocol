@@ -6,17 +6,17 @@ import org.hitro.binaryprotocol.services.orchestrators.decode.DecodeOrchestrator
 import org.hitro.binaryprotocol.services.orchestrators.encode.EncodeOrchestrator;
 
 public class IBinaryProtocol<T> implements BinaryProtocol<T>{
-    private DecodeOrchestrator decodeOrchestrator;
+    private Orchestrator decodeOrchestrator;
 
     private Orchestrator encodeOrchestrator;
     private IBinaryProtocol(){
-        this.decodeOrchestrator =new DecodeOrchestrator<>();
+        this.decodeOrchestrator = new DecodeOrchestrator<>();
         this.encodeOrchestrator = new EncodeOrchestrator<>();
     }
 
     @Override
     public T decode(byte[] data) {
-        return (T)this.decodeOrchestrator.decodeBytes(data);
+        return (T)this.decodeOrchestrator.orchestrate(data);
     }
 
     @Override

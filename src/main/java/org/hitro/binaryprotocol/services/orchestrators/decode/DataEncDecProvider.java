@@ -6,14 +6,15 @@ import org.hitro.binaryprotocol.services.encodedecode.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DataEncDecProvider<T> {
     private Map<DecodeSteps,EncDec> decodeStepsEncDecMap;
     private Map<Type,EncDec> typeEncDecMap;
 
     public DataEncDecProvider(DecodeOrchestrator decodeOrchestrator){
-        decodeStepsEncDecMap = new HashMap<>();
-        typeEncDecMap = new HashMap<>();
+        decodeStepsEncDecMap = new ConcurrentHashMap<>();
+        typeEncDecMap = new ConcurrentHashMap<>();
 
         decodeStepsEncDecMap.put(DecodeSteps.START, null);
         decodeStepsEncDecMap.put(DecodeSteps.TYPE,  new TypeEncDec());
