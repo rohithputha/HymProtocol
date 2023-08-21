@@ -29,7 +29,6 @@ public class DecodeOrchestrator<T> implements Orchestrator<T,byte[]> {
         dataExtract = dataExtractorProvider.getDataExtractByStepCode(data, dataExtract.getNextPointer(), DecodeSteps.SIZE,Optional.empty());
         int size = (Integer) dataEncDecProvider.getDecodedData(dataExtract.getExtractedData(),DecodeSteps.SIZE);
 
-
         dataExtract = dataExtractorProvider.getDataExtractByStepCode(data, dataExtract.getNextPointer(), DecodeSteps.DATA,type == Type.ARRAY ? Optional.of(-1) : Optional.of(size));
         return (T) dataEncDecProvider.getDecodedData(dataExtract.getExtractedData(),type);
     }
@@ -38,4 +37,6 @@ public class DecodeOrchestrator<T> implements Orchestrator<T,byte[]> {
     public T orchestrate(byte[] data) {
         return decodeBytes(data);
     }
+
+
 }

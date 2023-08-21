@@ -6,11 +6,12 @@ import org.hitro.binaryprotocol.services.dataextractor.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DataExtractorProvider {
     private Map<DecodeSteps, ByteArrayExtractor> decodeStepsExtractorMap;
     public DataExtractorProvider(){
-        decodeStepsExtractorMap = new HashMap<>();
+        decodeStepsExtractorMap = new ConcurrentHashMap<>();
         decodeStepsExtractorMap.put(DecodeSteps.START, new StartExctractor());
         decodeStepsExtractorMap.put(DecodeSteps.TYPE,  new TypeExtractor());
         decodeStepsExtractorMap.put(DecodeSteps.SIZE,  new SizeExtractor());
