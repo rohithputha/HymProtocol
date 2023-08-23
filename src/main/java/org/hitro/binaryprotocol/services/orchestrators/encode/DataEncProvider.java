@@ -17,7 +17,7 @@ public class DataEncProvider<T> {
         decodeStepsEncDecMap = new ConcurrentHashMap<>();
         typeEncDecMap = new ConcurrentHashMap<>();
 
-        decodeStepsEncDecMap.put(DecodeSteps.START, null);
+//        decodeStepsEncDecMap.put(DecodeSteps.START, null);
         decodeStepsEncDecMap.put(DecodeSteps.TYPE,  new TypeEncDec());
         decodeStepsEncDecMap.put(DecodeSteps.SIZE,  new SizeEncDec());
 
